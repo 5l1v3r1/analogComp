@@ -8,10 +8,14 @@ Atmel microcontrollers
 
 Written by Leonardo Miliani <leonardo AT leonardomiliani DOT com>
 
+Add Teensy 3.x support
+
+Written by Hisashi Ito <info AT mewpro DOT cc>
 
 ***********************
 Version history
 
+v. 1.3.0:  MK20DX128/256 (Teensy 3.x) support
 v. 1.2.1:  fixed a bug that let the ADC off after a comparison
 v. 1.2.0:  fixed a bug into the conversion from analog to phisical pins
 v. 1.1.1:  now it calls the correct interrupt vector for the MCU in use
@@ -121,6 +125,8 @@ and Arduino boards:
 - Atmega48/88/168/328 (Arduino UNO)
 - Atmega640/1280/1281/2560/2561 (Arduino MEGA)
 - Atmega32U4** (Arduino Leonardo)
+And also works with freescale microcontrollers on Teensy 3.x boards:
+- MK20DX128/256
 
 Specific limitations:
 * Attiny2313/4313:
@@ -131,7 +137,34 @@ is allowed for AIN-.
 the Atmega32U4 AIN- can only be connected to an analog input pin because
 it has no AIN1 pin.
 
-***********************
+** MK20DX128/256
+There are two analog comparators on MK20DX128 and three on MK20DX256.
+Second or third can be accessed by the object analogComparator1 or
+analogComparator2 respectively.
+AIN- and AIN+ are respectively called INM and INP in freescale's terminology
+and both of these can be assigned to following signals.
+analogComparator (CMP0):
+- 0. CMP0_IN0 (K20Pin 51 = TeensyPin 11)
+- 1. CMP0_IN1 (K20Pin 52 = TeensyPin 12)
+- 2. CMP0_IN2 (K20Pin 53 = TeensyPin 28)
+- 3. CMP0_IN3 (K20Pin 54 = TeensyPin 27)
+- 4. CMP0_IN4 (K20Pin 55 = TeensyPin 29)
+- 5. VREF Output/CMP0_IN5 (K20Pin 17)
+- 6. Bandgap
+- 7. 6b DAC0 Reference
+analogComparator1 (CMP1):
+- 0. CMP1_IN0 (K20Pin 45 = TeensyPin 23)
+- 1. CMP1_IN1 (K20Pin 46 = TeensyPin 9)
+- 3. 12-bit DAC0_OUT/CMP1_IN3 (K20Pin 18 = TeensyPin A14/DAC (Teensy 3.1 only))
+- 5. VREF Output/CMP1_IN5 (K20Pin 17) 
+- 6. Bandgap
+- 7. 6b DAC1 Reference
+analogComparator2 (CMP2 Teensy 3.1 only):
+- 0. CMP2_IN0 (K20Pin 28 = TeensyPin 3)
+- 1. CMP2_IN1 (K20Pin 29 = TeensyPin 4)
+- 6. Bandgap
+- 7. 6b DAC2 Reference
+*********************
 Licence
 
 This library is free software; you can redistribute it and/or modify it
@@ -147,4 +180,5 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 ***********************
 Document revision
 
+8th revision: 2014/10/20
 7th revision: 2013/07/30

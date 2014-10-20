@@ -5,6 +5,8 @@
 #######################################
 
 analogComparator	KEYWORD1
+analogComparator1       KEYWORD1
+analogComparator2       KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
