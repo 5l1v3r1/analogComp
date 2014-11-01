@@ -126,7 +126,7 @@ and Arduino boards:
 - Atmega640/1280/1281/2560/2561 (Arduino MEGA)
 - Atmega32U4** (Arduino Leonardo)
 And also works with freescale microcontrollers on Teensy 3.x boards:
-- MK20DX128/256
+- MK20DX128/256***
 
 Specific limitations:
 * Attiny2313/4313:
@@ -137,7 +137,7 @@ is allowed for AIN-.
 the Atmega32U4 AIN- can only be connected to an analog input pin because
 it has no AIN1 pin.
 
-** MK20DX128/256
+*** MK20DX128/256
 There are two analog comparators on MK20DX128 and three on MK20DX256.
 Second or third can be accessed by the object analogComparator1 or
 analogComparator2 respectively.
