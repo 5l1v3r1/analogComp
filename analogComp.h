@@ -4,7 +4,8 @@
     that is integrated in several Atmel microcontrollers
 
 	Written by Leonardo Miliani <leonardo AT leonardomiliani DOT com>
-        Modified for Teensy 3.x by Hisashi Ito <info AT mewpro DOT cc>
+
+        Modified for Teensy 3.x/LC by Hisashi Ito <info AT mewpro DOT cc>
 
     The latest version of this library can be found at:
     http://www.leonardomiliani.com/
@@ -72,6 +73,9 @@
 #elif defined (__AVR_ATmega32U4__)
 #define ATMEGAxU
 #define NUM_ANALOG_INPUTS 12
+#elif defined (__MKL26Z64__)
+#define NUM_ANALOG_INPUTS 8
+#define CMP_INTERFACES_COUNT 1
 #elif defined (__MK20DX128__)
 #define NUM_ANALOG_INPUTS 8
 #define CMP_INTERFACES_COUNT 2

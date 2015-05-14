@@ -6,7 +6,7 @@
 //include required libraries
 #include "analogComp.h"
 
-#if !defined (__MK20DX256__) && !defined (__MK20DX128__)
+#if !defined (__MK20DX256__) && !defined (__MK20DX128__) && !defined (__MKL26Z64__)
 
 //setting and switching on the analog comparator
 uint8_t analogComp::setOn(uint8_t tempAIN0, uint8_t tempAIN1) {
@@ -331,22 +331,34 @@ void cmp0_isr() {
 static void CMP0_Init(uint8_t inp, uint8_t inm) {
     NVIC_SET_PRIORITY(IRQ_CMP0, 64); // 0 = highest priority, 255 = lowest
     NVIC_ENABLE_IRQ(IRQ_CMP0); // handler is now cmp0_isr()
-    if (inp == 0 || inm == 0) { // CMP0_IN0 (51 = pin11)
+    if (inp == 0 || inm == 0) { // CMP0_IN0 (Teensy 3.x: 51 = pin11; Teensy LC: 39 = pin11)
         CORE_PIN11_CONFIG = PORT_PCR_MUX(0); // set pin11 function to ALT0
     }
-    if (inp == 1 || inm == 1) { // CMP0_IN1 (52 = pin12)
+    if (inp == 1 || inm == 1) { // CMP0_IN1 (Teensy 3.x: 52 = pin12; Teensy LC: 40 = pin12)
         CORE_PIN12_CONFIG = PORT_PCR_MUX(0); // set pin12 function to ALT0
     }
-    if (inp == 2 || inm == 2) { // CMP0_IN2 (53 = pin28)
+    if (inp == 2 || inm == 2) { // CMP0_IN2 (Teensy 3.x: 53 = pin28; Teensy LC: N/A)
+#if defined(__MK20DX256__) || defined(__MK20DX128__) // Teensy 3.x
         CORE_PIN28_CONFIG = PORT_PCR_MUX(0); // set pin28 function to ALT0
+#else // Teensy LC
+        ; // do nothing
+#endif
     }
-    if (inp == 3 || inm == 3) { // CMP0_IN3 (54 = pin27)
+    if (inp == 3 || inm == 3) { // CMP0_IN3 (Teensy 3.x: 54 = pin27; Teensy LC: N/A)
+#if defined(__MK20DX256__) || defined(__MK20DX128__) // Teensy 3.x
         CORE_PIN27_CONFIG = PORT_PCR_MUX(0); // set pin27 function to ALT0
+#else // Teensy LC
+        ; // do nothing
+#endif
     }
-    if (inp == 4 || inm == 4) { // CMP0_IN4 (55 = pin29)
+    if (inp == 4 || inm == 4) { // CMP0_IN4 (Teensy 3.x: 55 = pin29; Teensy LC: 14 = pin26)
+#if defined(__MK20DX256__) || defined(__MK20DX128__) // Teensy 3.x
         CORE_PIN29_CONFIG = PORT_PCR_MUX(0); // set pin29 function to ALT0
+#else // Teensy LC
+        CORE_PIN26_CONFIG = PORT_PCR_MUX(0); // set pin26 function to ALT0
+#endif
     }
-    if (inp == 5 || inm == 5) { // VREF Output/CMP0_IN5 (17)
+    if (inp == 5 || inm == 5) { // VREF Output/CMP0_IN5 (Teensy 3.x: 17; Teensy LC: 13)
         ; // do nothing
     }
     if (inp == 6 || inm == 6) { // Bandgap
@@ -357,6 +369,7 @@ static void CMP0_Init(uint8_t inp, uint8_t inm) {
     }
 }
 
+#if CMP_INTERFACES_COUNT > 1 // Teensy 3.x
 void cmp1_isr() {
     CMP1_SCR |= CMP_SCR_CFR | CMP_SCR_CFF; // clear CFR and CFF
     analogComparator1.userFunction(); //call the user function
@@ -411,6 +424,7 @@ static void CMP2_Init(uint8_t inp, uint8_t inm) {
         ; // do nothing
     }
 }
+#endif
 #endif
 
 #endif
