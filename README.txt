@@ -15,6 +15,8 @@ Written by Hisashi Ito <info AT mewpro DOT cc>
 ***********************
 Version history
 
+v. 1.3.2:  ATtiny441/841 and ATtiny1634 support
+           fixed a bug in handling digital buffer (changed to no touch at all)
 v. 1.3.1:  MKL26Z64 (Teensy LC) support
 v. 1.3.0:  MK20DX128/256 (Teensy 3.x) support
 v. 1.2.1:  fixed a bug that let the ADC off after a comparison
