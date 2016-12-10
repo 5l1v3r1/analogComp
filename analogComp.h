@@ -91,7 +91,7 @@
 #  define CMP_INTERFACES_COUNT 1
 #elif defined (__MK20DX128__)
 #  define CMP_INTERFACES_COUNT 2
-#elif defined (__MK20DX256__)
+#elif defined (__MK20DX256__) || (__MK64FX512__) || defined (__MK66FX1M0__)
 #  define CMP_INTERFACES_COUNT 3
 #else
 #error Sorry, microcontroller not supported!

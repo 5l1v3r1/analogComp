@@ -6,7 +6,7 @@
 //include required libraries
 #include "analogComp.h"
 
-#if !defined(__MK20DX256__) && !defined(__MK20DX128__) && !defined(__MKL26Z64__)
+#if !defined(__MK20DX256__) && !defined(__MK20DX128__) && !defined(__MKL26Z64__) && !defined(__MK64FX512__) && !defined(__MK66FX1M0__)
 
 analogComp::analogComp(volatile uint8_t *acsrxa, volatile uint8_t *acsrxb) :
  _initialized(0), _interruptEnabled(0), _ACSRXA(acsrxa), _ACSRXB(acsrxb) {
@@ -307,34 +307,40 @@ void cmp0_isr() {
 static void CMP0_Init(uint8_t inp, uint8_t inm) {
     NVIC_SET_PRIORITY(IRQ_CMP0, 64); // 0 = highest priority, 255 = lowest
     NVIC_ENABLE_IRQ(IRQ_CMP0); // handler is now cmp0_isr()
-    if (inp == 0 || inm == 0) { // CMP0_IN0 (Teensy 3.x: 51 = pin11; Teensy LC: 39 = pin11)
+    if (inp == 0 || inm == 0) { // CMP0_IN0 (Teensy 3.x, Teensy LC: pin11)
         CORE_PIN11_CONFIG = PORT_PCR_MUX(0); // set pin11 function to ALT0
     }
-    if (inp == 1 || inm == 1) { // CMP0_IN1 (Teensy 3.x: 52 = pin12; Teensy LC: 40 = pin12)
+    if (inp == 1 || inm == 1) { // CMP0_IN1 (Teensy 3.x, Teensy LC: pin12)
         CORE_PIN12_CONFIG = PORT_PCR_MUX(0); // set pin12 function to ALT0
     }
-    if (inp == 2 || inm == 2) { // CMP0_IN2 (Teensy 3.x: 53 = pin28; Teensy LC: N/A)
-#if defined(__MK20DX256__) || defined(__MK20DX128__) // Teensy 3.x
+    if (inp == 2 || inm == 2) { // CMP0_IN2 (Teensy 3.[012]: pin28; Teensy 3.[56]: pin35; Teensy LC: N/A)
+#if defined(__MK20DX256__) || defined(__MK20DX128__) // Teensy 3.[012]
         CORE_PIN28_CONFIG = PORT_PCR_MUX(0); // set pin28 function to ALT0
+#elif defined(__MK64FX512__) || defined(__MK66FX1M0__) // Teensy 3.[56]
+        CORE_PIN35_CONFIG = PORT_PCR_MUX(0); // set pin35 function to ALT0
 #else // Teensy LC
         ; // do nothing
 #endif
     }
-    if (inp == 3 || inm == 3) { // CMP0_IN3 (Teensy 3.x: 54 = pin27; Teensy LC: N/A)
-#if defined(__MK20DX256__) || defined(__MK20DX128__) // Teensy 3.x
+    if (inp == 3 || inm == 3) { // CMP0_IN3 (Teensy 3.[012]: pin27; Teensy 3.[56]: pin 36; Teensy LC: N/A)
+#if defined(__MK20DX256__) || defined(__MK20DX128__) // Teensy 3.[012]
         CORE_PIN27_CONFIG = PORT_PCR_MUX(0); // set pin27 function to ALT0
+#elif defined(__MK64FX512__) || defined(__MK66FX1M0__) // Teensy 3.[56]
+        CORE_PIN36_CONFIG = PORT_PCR_MUX(0); // set pin36 function to ALT0
 #else // Teensy LC
         ; // do nothing
 #endif
     }
-    if (inp == 4 || inm == 4) { // CMP0_IN4 (Teensy 3.x: 55 = pin29; Teensy LC: 14 = pin26)
-#if defined(__MK20DX256__) || defined(__MK20DX128__) // Teensy 3.x
+    if (inp == 4 || inm == 4) { // CMP0_IN4 (Teensy 3.[012]: pin29; Teensy 3.[56]: pin 67; Teensy LC: pin26)
+#if defined(__MK20DX256__) || defined(__MK20DX128__) // Teensy 3.[012]
         CORE_PIN29_CONFIG = PORT_PCR_MUX(0); // set pin29 function to ALT0
+#elif defined(__MK64FX512__) || defined(__MK66FX1M0__) // Teensy 3.[56]
+        // CORE_PIN67_CONFIG = PORT_PCR_MUX(0); // set pin67 function to ALT0
 #else // Teensy LC
         CORE_PIN26_CONFIG = PORT_PCR_MUX(0); // set pin26 function to ALT0
 #endif
     }
-    if (inp == 5 || inm == 5) { // VREF Output/CMP0_IN5 (Teensy 3.x: 17; Teensy LC: 13)
+    if (inp == 5 || inm == 5) { // VREF Output/CMP0_IN5
         ; // do nothing
     }
     if (inp == 6 || inm == 6) { // Bandgap
@@ -354,16 +360,22 @@ void cmp1_isr() {
 static void CMP1_Init(uint8_t inp, uint8_t inm) {
     NVIC_SET_PRIORITY(IRQ_CMP1, 64); // 0 = highest priority, 255 = lowest
     NVIC_ENABLE_IRQ(IRQ_CMP1); // handler is now cmp1_isr()
-    if (inp == 0 || inm == 0) { // CMP1_IN0 (45 = pin23)
+    if (inp == 0 || inm == 0) { // CMP1_IN0 (pin23)
         CORE_PIN23_CONFIG = PORT_PCR_MUX(0); // set pin23 function to ALT0
     }
-    if (inp == 1 || inm == 1) { // CMP1_IN1 (46 = pin9)
+    if (inp == 1 || inm == 1) { // CMP1_IN1 (pin9)
         CORE_PIN9_CONFIG = PORT_PCR_MUX(0); // set pin9 function to ALT0
     }
-    if (inp == 3 || inm == 3) { // 12-bit DAC0_OUT/CMP1_IN3 (18)
-        ; // do nothing
+    if (inp == 3 || inm == 3) { // 12-bit DAC0_OUT/CMP1_IN3 (Teensy 3.[012]: pin 40; Teensy 3.[56]: pin 66)
+#if defined(__MK20DX256__) || defined(__MK20DX128__) // Teensy 3.[012]
+        // CORE_PIN40_CONFIG = PORT_PCR_MUX(0); // set pin40 function to ALT0
+#elif defined(__MK64FX512__) || defined(__MK66FX1M0__) // Teensy 3.[56]
+        // CORE_PIN66_CONFIG = PORT_PCR_MUX(0); // set pin66 function to ALT0
+#else // Teensy LC
+        ; // never reach here
+#endif
     }
-    if (inp == 5 || inm == 5) { // VREF Output/CMP1_IN5 (17) 
+    if (inp == 5 || inm == 5) { // VREF Output/CMP1_IN5
         ; // do nothing
     }
     if (inp == 6 || inm == 6) { // Bandgap
@@ -383,16 +395,22 @@ void cmp2_isr() {
 static void CMP2_Init(uint8_t inp, uint8_t inm) {
     NVIC_SET_PRIORITY(IRQ_CMP2, 64); // 0 = highest priority, 255 = lowest
     NVIC_ENABLE_IRQ(IRQ_CMP2); // handler is now cmp2_isr()
-    if (inp == 0 || inm == 0) { // CMP2_IN0 (28 = pin3)
+    if (inp == 0 || inm == 0) { // CMP2_IN0 (pin3)
         CORE_PIN3_CONFIG = PORT_PCR_MUX(0); // set pin3 function to ALT0
     }
-    if (inp == 1 || inm == 1) { // CMP2_IN1 (29 = pin4)
+    if (inp == 1 || inm == 1) { // CMP2_IN1 (pin4)
         CORE_PIN4_CONFIG = PORT_PCR_MUX(0); // set pin4 function to ALT0
     }
-//  if (inp == 3 || inm == 3) { // CMP2_IN3
+    if (inp == 3 || inm == 3) { // CMP2_IN3 (Teensy 3.[56]: pin 67)
+#if defined(__MK20DX256__) || defined(__MK20DX128__) // Teensy 3.[012]
 // this setting exists at the CMP section of the manual but
 // non-existent in "K20 Signal Multiplexing and Pin Assignments"
-//  }
+#elif defined(__MK64FX512__) || defined(__MK66FX1M0__) // Teensy 3.[56]
+        // CORE_PIN67_CONFIG = PORT_PCR_MUX(0); // set pin67 function to ALT0
+#else // Teensy LC
+        ; // never reach here
+#endif
+    }
     if (inp == 6 || inm == 6) { // Bandgap
         ; // do nothing
     }
