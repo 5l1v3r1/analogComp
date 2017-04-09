@@ -297,6 +297,47 @@ uint8_t analogComp::waitComp(unsigned long _timeOut) {
     return 0;
 }
 
+//
+uint8_t analogComp::getOutput() {
+	
+	uint8_t _output = 0;
+	
+    //set up the analog comparator if it isn't
+    if (!_initialized) {
+        setOn(0, 1);
+        _initialized = 0;
+    }
+
+    if ((CMP_BASE_ADDR[CMPx_SCR] & CMP_SCR_COUT)) { //check if output flag is set
+        _output = 1;
+	}
+
+    //switch off the analog comparator if it was off
+    if (!_initialized) {
+        setOff();
+    }
+    return _output;
+}
+
+void analogComp::configureDac(uint8_t val)
+{
+	uint8_t tmp8 = 0U;
+	
+	if (val == 0)
+	{
+		CMP0_DACCR = 0U;
+		return;
+	}
+
+    /* CMPx_DACCR. */
+    tmp8 |= CMP_DACCR_DACEN; /* Enable the internal DAC. */
+    tmp8 |= CMP_DACCR_VRSEL; /* Vin2 */
+    tmp8 |= CMP_DACCR_VOSEL(val);
+
+    CMP0_DACCR = tmp8;
+}
+
+
 //ISR (Interrupt Service Routine) called by the analog comparator when
 //the user choose the raise of an interrupt
 void cmp0_isr() {

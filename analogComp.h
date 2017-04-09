@@ -125,6 +125,8 @@ class analogComp {
         void enableInterrupt(void (*)(void), uint8_t tempMode = CHANGE);
         void disableInterrupt(void);
         uint8_t waitComp(unsigned long = 0);
+        uint8_t getOutput(void);
+        void configureDac(uint8_t val);
         void (*userFunction)(void);
     private:
         uint8_t _initialized;
